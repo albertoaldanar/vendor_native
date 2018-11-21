@@ -1,12 +1,9 @@
 import React, {Component} from "react";
 import {View, Text, TextInput, Picker, TouchableOpacity} from "react-native";
 import FontAwesome, {Icons} from "react-native-fontawesome";
+import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions  } from 'react-navigation';
 
-class Filter extends Component{
-
-  constructor(props){
-    super(props);
-    this.state = {
+const INITIAL_STATE = {
       client: "",
       productType: "",
       price: 0,
@@ -15,12 +12,26 @@ class Filter extends Component{
       amount: 0,
       efficiency: ""
     }
+
+class Filter extends Component{
+  constructor(props){
+    super(props);
+    this.state = INITIAL_STATE
   };
 
   onChangeInput = (state) => (event,value) => {
     this.setState({
       [state]:event
     });
+  }
+
+  resetState(){
+    this.setState(INITIAL_STATE);
+    const navigateAction = NavigationActions.navigate({
+      routeName: 'Calendar'
+    });
+
+    this.props.navigation.dispatch(navigateAction);
   }
 
   postSale(){
@@ -35,22 +46,25 @@ class Filter extends Component{
       body: JSON.stringify({
         "price": price,
         "product_type": productType,
-        "user_id": 13,
-        "week": 3,
+        "user_id": 14,
+        "week": 4,
         "client": client,
         "finished": false,
         "brand": brand,
         "efficiency": efficiency,
-        "model": model
+        "model": model,
+        "authorized": false
       })
     }).then(res => res.json())
       .catch(error => console.error('Error:', error))
       .then(response => alert("Tu venta se ha registrado"));
+    this.resetState();
   }
 
   render(){
     const {client, productType, price, model, brand, amount, efficiency}= this.state;
-    console.log(model, brand, amount, efficiency );
+
+    console.log(model, brand, amount, efficiency);
 
     return(
       <View style = {styles.container}>
