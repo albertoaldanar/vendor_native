@@ -10,7 +10,9 @@ const INITIAL_STATE = {
       model: "",
       brand: "",
       amount: 0,
-      efficiency: ""
+      efficiency: "",
+      week: 0,
+      month: ""
     }
 
 class Filter extends Component{
@@ -18,6 +20,15 @@ class Filter extends Component{
     super(props);
     this.state = INITIAL_STATE
   };
+
+  componentWillMount(){
+    fetch("http://localhost:3000/api/variable")
+      .then(response => response.json())
+        .then(res => {
+          this.setState({week: res.week, month: res.month})
+        })
+    .catch((e)=> console.log(e));
+  }
 
   onChangeInput = (state) => (event,value) => {
     this.setState({
@@ -35,7 +46,7 @@ class Filter extends Component{
   }
 
   postSale(){
-    const {client, productType, price, model, brand, amount, efficiency} = this.state;
+    const {client, productType, price, model, brand, amount, efficiency, week, month} = this.state;
 
     fetch("http://localhost:3000/api/sell", {
       method: "POST",
@@ -46,8 +57,9 @@ class Filter extends Component{
       body: JSON.stringify({
         "price": price,
         "product_type": productType,
-        "user_id": 14,
-        "week": 4,
+        "user_id": 12,
+        "week": week,
+        "month": month,
         "client": client,
         "finished": false,
         "brand": brand,
@@ -62,9 +74,7 @@ class Filter extends Component{
   }
 
   render(){
-    const {client, productType, price, model, brand, amount, efficiency}= this.state;
-
-    console.log(model, brand, amount, efficiency);
+    const {client, productType, price, model, brand, amount, efficiency, week, month}= this.state;
 
     return(
       <View style = {styles.container}>
